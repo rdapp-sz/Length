@@ -2,6 +2,10 @@
 {
     public class Length
     {
+        public const string YARD = "yard";
+        public const string INCH = "inch";
+        public const string FOOT = "foot";
+
         public Length(double val, string unit)
         {
             Val = val;
@@ -11,37 +15,37 @@
         public Length As(string u)
         {
             var len = this;
-            if (Unit.Equals("f"))
+            if (Unit.Equals(FOOT))
             {
-                if (u.Equals("yard"))
+                if (u.Equals(YARD))
                 {
                     len = new Length(Val / 3, u);
                 }
-                else if (u.Equals("inch"))
+                else if (u.Equals(INCH))
                 {
                     len = new Length(Val * 12, u);
                 }
             }
 
-            if (Unit.Equals("yard"))
+            if (Unit.Equals(YARD))
             {
-                if (u.Equals("inch"))
+                if (u.Equals(INCH))
                 {
                     len = new Length(Val * 36, u);
                 }
-                else if (u.Equals("f"))
+                else if (u.Equals(FOOT))
                 {
                     len = new Length(Val * 3, u);
                 }
             }
 
-            if (Unit.Equals("inch"))
+            if (Unit.Equals(INCH))
             {
-                if (u.Equals("f"))
+                if (u.Equals(FOOT))
                 {
                     len = new Length(Val / 12, u);
                 }
-                else if (u.Equals("yard"))
+                else if (u.Equals(YARD))
                 {
                     len = new Length(Val / 36, u);
                 }
