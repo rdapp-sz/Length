@@ -2,56 +2,29 @@
 {
     public class Length
     {
-        public Length(double val, string unit)
+        private static readonly UnitConverterFactory _converterFactory = new UnitConverterFactory();
+        private readonly double m_footValue;
+
+        public Length(double val, Unit unit) 
+            : this(val, _converterFactory.GetConverter(unit))
         {
-            Val = val;
-            Unit = unit;
         }
 
-        public Length As(string u)
+        private Length(double val, IUnitConverter converter)
         {
-            var len = this;
-            if (Unit.Equals("f"))
-            {
-                if (u.Equals("yard"))
-                {
-                    len = new Length(Val / 3, u);
-                }
-                else if (u.Equals("inch"))
-                {
-                    len = new Length(Val * 12, u);
-                }
-            }
+            Val = val;
+            Unit = converter.ConvertType;
+            m_footValue = converter.ConvertToFoot(val);
+        }
 
-            if (Unit.Equals("yard"))
-            {
-                if (u.Equals("inch"))
-                {
-                    len = new Length(Val * 36, u);
-                }
-                else if (u.Equals("f"))
-                {
-                    len = new Length(Val * 3, u);
-                }
-            }
-
-            if (Unit.Equals("inch"))
-            {
-                if (u.Equals("f"))
-                {
-                    len = new Length(Val / 12, u);
-                }
-                else if (u.Equals("yard"))
-                {
-                    len = new Length(Val / 36, u);
-                }
-            }
-
-            return len;
+        public Length As(Unit unit)
+        {
+            var converter = _converterFactory.GetConverter(unit);
+            return new Length(converter.ConvertFromFoot(m_footValue), converter.ConvertType);
         }
 
         public double Val { get; }
 
-        public string Unit { get; }
+        public Unit Unit { get; }
     }
 }
