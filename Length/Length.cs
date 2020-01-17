@@ -1,55 +1,95 @@
-﻿namespace LengthDemo
+﻿using System;
+
+namespace LengthDemo
 {
     public class Length
     {
+        private readonly Func<Unit, double> m_convertFunc;
+
         public Length(double val, Unit unit)
         {
             Val = val;
             Unit = unit;
+
+            switch (unit)
+            {
+                case Unit.Foot:
+                    m_convertFunc = FromFootTo;
+                    break;
+                case Unit.Inch:
+                    m_convertFunc = FromInchTo;
+                    break;
+                case Unit.Yard:
+                    m_convertFunc = FromYardTo;
+                    break;
+                default:
+                    throw new NotSupportedException();
+            }
         }
 
         public Length As(Unit unit)
         {
-            var len = this;
-            var currentUnit = Unit;
+            return new Length(m_convertFunc(unit), unit);
+        }
 
-            if (currentUnit == Unit.Foot)
+        private double FromFootTo(Unit unit)
+        {
+            if (unit == Unit.Yard)
             {
-                if (unit == Unit.Yard)
-                {
-                    len = new Length(Val / 3, unit);
-                }
-                else if (unit == Unit.Inch)
-                {
-                    len = new Length(Val * 12, unit);
-                }
+                return Val / 3;
             }
 
-            if (currentUnit == Unit.Yard)
+            if (unit == Unit.Inch)
             {
-                if (unit == Unit.Inch)
-                {
-                    len = new Length(Val * 36, unit);
-                }
-                else if (unit == Unit.Foot)
-                {
-                    len = new Length(Val * 3, unit);
-                }
+                return Val * 12;
             }
 
-            if (currentUnit == Unit.Inch)
+            if (unit == Unit.Foot)
             {
-                if (unit == Unit.Foot)
-                {
-                    len = new Length(Val / 12, unit);
-                }
-                else if (unit == Unit.Yard)
-                {
-                    len = new Length(Val / 36, unit);
-                }
+                return Val;
             }
 
-            return len;
+            throw new NotSupportedException();
+        }
+
+        private double FromYardTo(Unit unit)
+        {
+            if (unit == Unit.Inch)
+            {
+                return Val * 36;
+            }
+
+            if (unit == Unit.Foot)
+            {
+                return Val * 3;
+            }
+
+            if (unit == Unit.Yard)
+            {
+                return Val;
+            }
+
+            throw new NotSupportedException();
+        }
+
+        private double FromInchTo(Unit unit)
+        {
+            if (unit == Unit.Foot)
+            {
+                return Val / 12;
+            }
+
+            if (unit == Unit.Yard)
+            {
+                return Val / 36;
+            }
+
+            if (unit == Unit.Inch)
+            {
+                return Val;
+            }
+
+            throw new NotSupportedException();
         }
 
         public double Val { get; }
