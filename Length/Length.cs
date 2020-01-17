@@ -2,52 +2,50 @@
 {
     public class Length
     {
-        public const string YARD = "yard";
-        public const string INCH = "inch";
-        public const string FOOT = "foot";
-
-        public Length(double val, string unit)
+        public Length(double val, Unit unit)
         {
             Val = val;
             Unit = unit;
         }
 
-        public Length As(string u)
+        public Length As(Unit unit)
         {
             var len = this;
-            if (Unit.Equals(FOOT))
+            var currentUnit = Unit;
+
+            if (currentUnit == Unit.Foot)
             {
-                if (u.Equals(YARD))
+                if (unit == Unit.Yard)
                 {
-                    len = new Length(Val / 3, u);
+                    len = new Length(Val / 3, unit);
                 }
-                else if (u.Equals(INCH))
+                else if (unit == Unit.Inch)
                 {
-                    len = new Length(Val * 12, u);
+                    len = new Length(Val * 12, unit);
                 }
             }
 
-            if (Unit.Equals(YARD))
+            if (currentUnit == Unit.Yard)
             {
-                if (u.Equals(INCH))
+                if (unit == Unit.Inch)
                 {
-                    len = new Length(Val * 36, u);
+                    len = new Length(Val * 36, unit);
                 }
-                else if (u.Equals(FOOT))
+                else if (unit == Unit.Foot)
                 {
-                    len = new Length(Val * 3, u);
+                    len = new Length(Val * 3, unit);
                 }
             }
 
-            if (Unit.Equals(INCH))
+            if (currentUnit == Unit.Inch)
             {
-                if (u.Equals(FOOT))
+                if (unit == Unit.Foot)
                 {
-                    len = new Length(Val / 12, u);
+                    len = new Length(Val / 12, unit);
                 }
-                else if (u.Equals(YARD))
+                else if (unit == Unit.Yard)
                 {
-                    len = new Length(Val / 36, u);
+                    len = new Length(Val / 36, unit);
                 }
             }
 
@@ -56,6 +54,6 @@
 
         public double Val { get; }
 
-        public string Unit { get; }
+        public Unit Unit { get; }
     }
 }
