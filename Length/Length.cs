@@ -1,95 +1,26 @@
-﻿using System;
-
-namespace LengthDemo
+﻿namespace LengthDemo
 {
     public class Length
     {
-        private readonly Func<Unit, double> m_convertFunc;
+        private static readonly UnitConverterFactory _converterFactory = new UnitConverterFactory();
+        private readonly double m_footValue;
 
-        public Length(double val, Unit unit)
+        public Length(double val, Unit unit) 
+            : this(val, _converterFactory.GetConverter(unit))
+        {
+        }
+
+        private Length(double val, IUnitConverter converter)
         {
             Val = val;
-            Unit = unit;
-
-            switch (unit)
-            {
-                case Unit.Foot:
-                    m_convertFunc = FromFootTo;
-                    break;
-                case Unit.Inch:
-                    m_convertFunc = FromInchTo;
-                    break;
-                case Unit.Yard:
-                    m_convertFunc = FromYardTo;
-                    break;
-                default:
-                    throw new NotSupportedException();
-            }
+            Unit = converter.ConvertType;
+            m_footValue = converter.ConvertToFoot(val);
         }
 
         public Length As(Unit unit)
         {
-            return new Length(m_convertFunc(unit), unit);
-        }
-
-        private double FromFootTo(Unit unit)
-        {
-            if (unit == Unit.Yard)
-            {
-                return Val / 3;
-            }
-
-            if (unit == Unit.Inch)
-            {
-                return Val * 12;
-            }
-
-            if (unit == Unit.Foot)
-            {
-                return Val;
-            }
-
-            throw new NotSupportedException();
-        }
-
-        private double FromYardTo(Unit unit)
-        {
-            if (unit == Unit.Inch)
-            {
-                return Val * 36;
-            }
-
-            if (unit == Unit.Foot)
-            {
-                return Val * 3;
-            }
-
-            if (unit == Unit.Yard)
-            {
-                return Val;
-            }
-
-            throw new NotSupportedException();
-        }
-
-        private double FromInchTo(Unit unit)
-        {
-            if (unit == Unit.Foot)
-            {
-                return Val / 12;
-            }
-
-            if (unit == Unit.Yard)
-            {
-                return Val / 36;
-            }
-
-            if (unit == Unit.Inch)
-            {
-                return Val;
-            }
-
-            throw new NotSupportedException();
+            var converter = _converterFactory.GetConverter(unit);
+            return new Length(converter.ConvertFromFoot(m_footValue), converter.ConvertType);
         }
 
         public double Val { get; }
